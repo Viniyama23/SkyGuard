@@ -1,0 +1,474 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="ActivityBuilder_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System.Private.CoreLib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=System.Private.CoreLib" xmlns:sd="clr-namespace:System.Drawing;assembly=System.Drawing.Common" xmlns:sd1="clr-namespace:System.Drawing;assembly=System.Drawing.Primitives" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>GlobalVariablesNamespace</x:String>
+      <x:String>GlobalConstantsNamespace</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Linq.Expressions</x:String>
+      <x:String>UiPath.UIAutomationNext.Enums</x:String>
+      <x:String>UiPath.UIAutomationCore.Contracts</x:String>
+      <x:String>UiPath.UIAutomationNext.Models</x:String>
+      <x:String>UiPath.UIAutomationNext.Activities</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
+      <x:String>UiPath.Platform.ObjectLibrary</x:String>
+      <x:String>UiPath.Platform.SyncObjects</x:String>
+      <x:String>UiPath.UIAutomationNext.Contracts</x:String>
+      <x:String>UiPath.UIAutomationNext.Activities.Models</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>System.Numerics</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>UiPath.Platform.ResourceHandling</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.TypeConverter</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.Common</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Drawing.Common</AssemblyReference>
+      <AssemblyReference>System.Drawing.Primitives</AssemblyReference>
+      <AssemblyReference>System.Linq</AssemblyReference>
+      <AssemblyReference>System.Net.Mail</AssemblyReference>
+      <AssemblyReference>System.ObjectModel</AssemblyReference>
+      <AssemblyReference>System.Private.CoreLib</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>System.Reflection.DispatchProxy</AssemblyReference>
+      <AssemblyReference>System.Reflection.TypeExtensions</AssemblyReference>
+      <AssemblyReference>System.Reflection.Metadata</AssemblyReference>
+      <AssemblyReference>System.Reflection.MetadataLoadContext</AssemblyReference>
+      <AssemblyReference>System.Private.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.Private.DataContractSerialization</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Formatters</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization.Primitives</AssemblyReference>
+      <AssemblyReference>System.Console</AssemblyReference>
+      <AssemblyReference>System.Security.Permissions</AssemblyReference>
+      <AssemblyReference>System.Configuration.ConfigurationManager</AssemblyReference>
+      <AssemblyReference>System.ComponentModel</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>System.Private.Uri</AssemblyReference>
+      <AssemblyReference>System.Collections</AssemblyReference>
+      <AssemblyReference>System.Linq.Async</AssemblyReference>
+      <AssemblyReference>System.Collections.NonGeneric</AssemblyReference>
+      <AssemblyReference>System.Linq.Expressions</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Platform</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.EventBasedAsync</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Primitives</AssemblyReference>
+      <AssemblyReference>System.Runtime.Numerics</AssemblyReference>
+      <AssemblyReference>System.Runtime.InteropServices</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="Main Sequence" sap:VirtualizedContainerService.HintSize="1561,8023" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Default="—" Name="biomaPrincipal" />
+      <Variable x:TypeArguments="x:String" Default="—" Name="estadoPrincipal" />
+      <Variable x:TypeArguments="x:String" Name="dataHoje">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:String" Value="" />
+        </Variable.Default>
+      </Variable>
+      <Variable x:TypeArguments="x:String" Default="BAIXO" Name="nivelAlerta" />
+      <Variable x:TypeArguments="x:String" Default="0" Name="frpMaximo" />
+      <Variable x:TypeArguments="x:String" Default="0" Name="qtdAlertas" />
+      <Variable x:TypeArguments="x:String" Default="0" Name="totalFocos" />
+      <Variable x:TypeArguments="x:String" Name="textoAlerta" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Sequence DisplayName="SkyGuard Pipeline RPA" sap:VirtualizedContainerService.HintSize="556,8000" sap2010:WorkflowViewState.IdRef="Sequence_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Sequence DisplayName="1. Captura - NASA FIRMS Dashboard" sap:VirtualizedContainerService.HintSize="522,2225" sap2010:WorkflowViewState.IdRef="Sequence_3">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;[SKYGUARD] Pipeline iniciado em: &quot; + DateTime.Now.ToString(&quot;dd/MM/yyyy HH:mm:ss&quot;)]" />
+        <Assign sap:VirtualizedContainerService.HintSize="452,175" sap2010:WorkflowViewState.IdRef="Assign_1">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[dataHoje]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy")]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <uix:NApplicationCard AttachMode="ByInstance" DisplayName="Chrome SkyGuard — Monitor de Queimadas" HealingAgentBehavior="Job" sap:VirtualizedContainerService.HintSize="452,1783" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" InteractionMode="DebuggerApi" ScopeGuid="dc551290-ada8-4525-9e0e-3e682965b078" Version="V2">
+          <uix:NApplicationCard.Body>
+            <ActivityAction x:TypeArguments="x:Object">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+              </ActivityAction.Argument>
+              <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="450,1588" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Delay Duration="00:00:05" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="Delay_1" />
+                <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click '▶ CARREGAR DADOS NASA'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,194" sap2010:WorkflowViewState.IdRef="NClick_1" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="dc551290-ada8-4525-9e0e-3e682965b078" Version="V5">
+                  <uix:NClick.Target>
+                    <uix:TargetAnchorable BrowserURL="127.0.0.1/index.html" ContentHash="35ump4soska3eV9m4in-Cg" DesignTimeRectangle="374, 163, 199, 32" ElementType="Button" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='runBtn' tag='BUTTON' /&gt;" Guid="20c7574b-1578-4902-a37f-2ee56ecf9012" InformativeScreenshot="371ac3bff9c6d478680ff4eb4da14026.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/mTMH7TVRJEugnbi9HsxxSg" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NClick.Target>
+                </uix:NClick>
+                <Delay Duration="00:00:15" sap:VirtualizedContainerService.HintSize="416,123" sap2010:WorkflowViewState.IdRef="Delay_2" />
+                <uix:NGetText DisplayName="Get Text '478'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,143" sap2010:WorkflowViewState.IdRef="NGetText_1" ScopeIdentifier="dc551290-ada8-4525-9e0e-3e682965b078" TextString="[totalFocos]" Version="V5">
+                  <uix:NGetText.Target>
+                    <uix:TargetAnchorable BrowserURL="127.0.0.1/index.html" ContentHash="3emFx5N_F0OcOd-jdjGH7A" DesignTimeRectangle="30, 240, 336, 34" ElementType="Text" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='val-total' tag='DIV' /&gt;" Guid="8c5791ba-2d2f-46ca-89d8-814c044328b9" InformativeScreenshot="6e1260a88d2f57c7e63612e3465519a7.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/Hk41kq_L9k2-UTwUPzL0FQ" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NGetText.Target>
+                </uix:NGetText>
+                <uix:NGetText DisplayName="Get Text 'Label'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,143" sap2010:WorkflowViewState.IdRef="NGetText_2" ScopeIdentifier="dc551290-ada8-4525-9e0e-3e682965b078" TextString="[qtdAlertas]" Version="V5">
+                  <uix:NGetText.Target>
+                    <uix:TargetAnchorable BrowserURL="127.0.0.1/index.html" ContentHash="RBHaVdbJlUmR5aWmV_Tm4A" DesignTimeRectangle="411, 240, 336, 34" ElementType="Text" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='val-critical' tag='DIV' /&gt;" Guid="16f89e53-3a10-4804-a4b9-310bd8d8b1e0" InformativeScreenshot="7cd8a8b8ec98eacf6933181bc7cb43e1.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/skY24R_6B063nlOIq_3ziQ" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NGetText.Target>
+                </uix:NGetText>
+                <uix:NGetText DisplayName="Get Text '232 MW'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,143" sap2010:WorkflowViewState.IdRef="NGetText_3" ScopeIdentifier="dc551290-ada8-4525-9e0e-3e682965b078" TextString="[frpMaximo]" Version="V5">
+                  <uix:NGetText.Target>
+                    <uix:TargetAnchorable BrowserURL="127.0.0.1/index.html" ContentHash="lVBSNM_4UEqFdETyGfu9pQ" DesignTimeRectangle="792, 240, 336, 34" ElementType="Text" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl id='val-frp' tag='DIV' /&gt;" Guid="f7e60170-f60c-4c52-a118-fb84000645a7" InformativeScreenshot="9e852ff1e175981049cc75bda6ff2f83.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/RKBozJBCIkaKAUfD0nKeRQ" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NGetText.Target>
+                </uix:NGetText>
+                <uix:NGetText DisplayName="Get Text 'MT · CerradoAmazônia'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,143" sap2010:WorkflowViewState.IdRef="NGetText_4" ScopeIdentifier="dc551290-ada8-4525-9e0e-3e682965b078" TextString="[estadoPrincipal]" Version="V5">
+                  <uix:NGetText.Target>
+                    <uix:TargetAnchorable BrowserURL="127.0.0.1/index.html" ContentHash="JdllxzicTUmr7K5A_Rf35Q" DesignTimeRectangle="1581, 416, 243, 16" ElementType="Text" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl class='alert-location' parentid='alert-list' tag='DIV' /&gt;" Guid="dcc8a362-5421-418a-84f7-b232733cde25" InformativeScreenshot="b9d6689b3ce1fbeab95780ce024acdbe.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/uSgbucUy4UCZjw3nw1lRXQ" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NGetText.Target>
+                </uix:NGetText>
+                <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_7">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[textoAlerta]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[estadoPrincipal]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="416,175" sap2010:WorkflowViewState.IdRef="Assign_8">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[estadoPrincipal]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[textoAlerta.Split("·"c)(0).Trim()]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Assign sap:VirtualizedContainerService.HintSize="416,166" sap2010:WorkflowViewState.IdRef="Assign_9">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:String">[biomaPrincipal]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:String">[textoAlerta.Split("·"c)(1).Trim()]</InArgument>
+                  </Assign.Value>
+                </Assign>
+              </Sequence>
+            </ActivityAction>
+          </uix:NApplicationCard.Body>
+          <uix:NApplicationCard.OCREngine>
+            <ActivityFunc x:TypeArguments="sd:Image, scg:IEnumerable(scg:KeyValuePair(sd1:Rectangle, x:String))">
+              <ActivityFunc.Argument>
+                <DelegateInArgument x:TypeArguments="sd:Image" Name="Image" />
+              </ActivityFunc.Argument>
+            </ActivityFunc>
+          </uix:NApplicationCard.OCREngine>
+          <uix:NApplicationCard.TargetApp>
+            <uix:TargetApp Area="-8, -8, 1936, 1048" BrowserType="Chrome" ContentHash="bJE8e8OOz0C66TOJgbTzEw" IconBase64="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" InformativeScreenshot="f695f4345ed5b64ec5076970f9e592fd.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/u25Vb9SlCkmsop7hJO-6ow" Selector="&lt;html app='chrome.exe' title='SkyGuard — Monitor de Queimadas' /&gt;" Url="http://127.0.0.1:5500/index.html" Version="V3">
+              <uix:TargetApp.Arguments>
+                <InArgument x:TypeArguments="x:String" />
+              </uix:TargetApp.Arguments>
+              <uix:TargetApp.WorkingDirectory>
+                <InArgument x:TypeArguments="x:String" />
+              </uix:TargetApp.WorkingDirectory>
+            </uix:TargetApp>
+          </uix:NApplicationCard.TargetApp>
+        </uix:NApplicationCard>
+      </Sequence>
+      <Sequence DisplayName="2. Regras de Negócio - Classificação de Risco" sap:VirtualizedContainerService.HintSize="522,1738" sap2010:WorkflowViewState.IdRef="Sequence_4">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <Assign sap:VirtualizedContainerService.HintSize="488,175" sap2010:WorkflowViewState.IdRef="Assign_2">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[dataHoje]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">[DateTime.Now.ToString("dd/MM/yyyy")]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <Assign sap:VirtualizedContainerService.HintSize="488,175" sap2010:WorkflowViewState.IdRef="Assign_3">
+          <Assign.To>
+            <OutArgument x:TypeArguments="x:String">[nivelAlerta]</OutArgument>
+          </Assign.To>
+          <Assign.Value>
+            <InArgument x:TypeArguments="x:String">["BAIXO"]</InArgument>
+          </Assign.Value>
+        </Assign>
+        <If Condition="[CInt(If(qtdAlertas.Trim() = &quot;&quot; OrElse Not Integer.TryParse(qtdAlertas.Trim(), Nothing), &quot;0&quot;, qtdAlertas.Trim())) &gt; 0]" sap:VirtualizedContainerService.HintSize="488,1007" sap2010:WorkflowViewState.IdRef="If_1">
+          <If.Then>
+            <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="486,226" sap2010:WorkflowViewState.IdRef="Sequence_13">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <Assign sap:VirtualizedContainerService.HintSize="452,166" sap2010:WorkflowViewState.IdRef="Assign_4">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[nivelAlerta]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">["CRÍTICO"]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+          </If.Then>
+          <If.Else>
+            <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="486,642" sap2010:WorkflowViewState.IdRef="Sequence_14">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If Condition="[CInt(If(totalFocos.Trim() = &quot;&quot; OrElse Not Integer.TryParse(totalFocos.Trim(), Nothing), &quot;0&quot;, totalFocos.Trim())) &gt; 100]" sap:VirtualizedContainerService.HintSize="452,582" sap2010:WorkflowViewState.IdRef="If_3">
+                <If.Then>
+                  <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="449.6,225.6" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="416,165.6" sap2010:WorkflowViewState.IdRef="Assign_5">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[nivelAlerta]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["ALTO"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </Sequence>
+                </If.Then>
+                <If.Else>
+                  <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="449.6,225.6" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Assign sap:VirtualizedContainerService.HintSize="416,165.6" sap2010:WorkflowViewState.IdRef="Assign_6">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[nivelAlerta]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">["MÉDIO"]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </Sequence>
+                </If.Else>
+              </If>
+            </Sequence>
+          </If.Else>
+        </If>
+        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="488,175" sap2010:WorkflowViewState.IdRef="LogMessage_2" Level="Info" Message="[&quot;[SKYGUARD] Nível de alerta: &quot; + nivelAlerta + &quot; | Focos: &quot; + totalFocos + &quot; | Alertas: &quot; + qtdAlertas]" />
+        <Delay Duration="00:00:02" sap:VirtualizedContainerService.HintSize="488,114" sap2010:WorkflowViewState.IdRef="Delay_3" />
+      </Sequence>
+      <Sequence DisplayName="3. Notificação - Preencher Google Forms" sap:VirtualizedContainerService.HintSize="522,3954" sap2010:WorkflowViewState.IdRef="Sequence_5">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <uix:NApplicationCard AttachMode="ByInstance" DisplayName="Chrome SkyGuard — Registro de Alerta de Queim" HealingAgentBehavior="Job" sap:VirtualizedContainerService.HintSize="488,3871" sap2010:WorkflowViewState.IdRef="NApplicationCard_2" InteractionMode="DebuggerApi" ScopeGuid="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V2">
+          <uix:NApplicationCard.Body>
+            <ActivityAction x:TypeArguments="x:Object">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+              </ActivityAction.Argument>
+              <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="486,3676" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Delay Duration="00:00:03" sap:VirtualizedContainerService.HintSize="451.2,122.4" sap2010:WorkflowViewState.IdRef="Delay_4" />
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'INPUT'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="451.2,245.6" sap2010:WorkflowViewState.IdRef="NTypeInto_1" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="[dataHoje]" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="wHgFc1_8GkmIVMWLRqHnLw" DesignTimeRectangle="666, 452, 295, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl tag='INPUT' type='text' /&gt;" Guid="61086d9a-1131-4929-b8ab-cc80079070bc" InformativeScreenshot="3726d6dd7fcd76c91ff1dd27976a4033.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/gGcyvT-i5USaffTHL7rkwA" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                </uix:NTypeInto>
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'INPUT(1)'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,246" sap2010:WorkflowViewState.IdRef="NTypeInto_2" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="[estadoPrincipal]" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="lLQ8wpOSSUaIDt8F-O3idg" DesignTimeRectangle="666, 602, 295, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl aria-labelledby='i6 i9' tag='INPUT' type='text' /&gt;" Guid="167da3ba-6d12-4c95-8a07-a39067bfa96c" InformativeScreenshot="037bcb71a2c8e7fd5a82fa9f4e54de23.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/n5u52y0FdkutFWlJ93SWTA" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                  <uix:NTypeInto.VerifyOptions>
+                    <uix:VerifyExecutionTypeIntoOptions Mode="Appears">
+                      <uix:VerifyExecutionTypeIntoOptions.Retry>
+                        <InArgument x:TypeArguments="x:Boolean" />
+                      </uix:VerifyExecutionTypeIntoOptions.Retry>
+                      <uix:VerifyExecutionTypeIntoOptions.Timeout>
+                        <InArgument x:TypeArguments="x:Double" />
+                      </uix:VerifyExecutionTypeIntoOptions.Timeout>
+                    </uix:VerifyExecutionTypeIntoOptions>
+                  </uix:NTypeInto.VerifyOptions>
+                </uix:NTypeInto>
+                <If Condition="[biomaPrincipal.Contains(&quot;Amazônia&quot;)]" sap:VirtualizedContainerService.HintSize="452,629" sap2010:WorkflowViewState.IdRef="If_4">
+                  <If.Then>
+                    <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'DIV'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,185" sap2010:WorkflowViewState.IdRef="NClick_2" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5">
+                        <uix:NClick.Target>
+                          <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="_Jwg_iQUVU-LjEpSGh_Y5Q" DesignTimeRectangle="666, 448, 20, 20" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;form&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;span&amp;gt;div&amp;gt;div&amp;gt;label&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='i16' tag='DIV' /&gt;" Guid="bef26e6e-0cc0-436f-8e4e-3bd36a8853e9" InformativeScreenshot="1935584ada388bb4f9d1689d579cd648.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/l-VE2IDwREST-VxoNJJ4oQ" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                        </uix:NClick.Target>
+                      </uix:NClick>
+                    </Sequence>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'DIV(1)'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,185" sap2010:WorkflowViewState.IdRef="NClick_3" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5">
+                        <uix:NClick.Target>
+                          <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="nDyE2Rn0TUanTUnIRGiC_Q" DesignTimeRectangle="666, 488, 20, 20" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;form&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;span&amp;gt;div&amp;gt;div&amp;gt;label&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='i19' tag='DIV' /&gt;" Guid="c2351da1-1d03-4494-bfab-2a3816495664" InformativeScreenshot="d543dbc5347785387b49271bb64eeaac.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/gul7xkc8Jk6kI48OoW7zCA" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                        </uix:NClick.Target>
+                      </uix:NClick>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <If Condition="[nivelAlerta = &quot;CRÍTICO&quot;]" sap:VirtualizedContainerService.HintSize="452,629" sap2010:WorkflowViewState.IdRef="If_5">
+                  <If.Then>
+                    <Sequence DisplayName="Then" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'DIV(2)'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,185" sap2010:WorkflowViewState.IdRef="NClick_4" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5">
+                        <uix:NClick.Target>
+                          <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="pCcutQ-QkkarNCqCkZkZSA" DesignTimeRectangle="666, 670, 20, 20" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;form&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;span&amp;gt;div&amp;gt;div&amp;gt;label&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='i45' tag='DIV' /&gt;" Guid="dece37f9-ace6-4cfd-95e0-f622903d7600" InformativeScreenshot="b36a18107e6c0362693ff8f3daecbe67.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/BV_wgcjCBkWU5CY_n4UZug" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                        </uix:NClick.Target>
+                      </uix:NClick>
+                    </Sequence>
+                  </If.Then>
+                  <If.Else>
+                    <Sequence DisplayName="Else" sap:VirtualizedContainerService.HintSize="450,245" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'DIV(3)'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="416,185" sap2010:WorkflowViewState.IdRef="NClick_5" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5">
+                        <uix:NClick.Target>
+                          <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="sFU_fK6goEOXh8ZoHG1rUQ" DesignTimeRectangle="666, 630, 20, 20" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl css-selector='body&amp;gt;div&amp;gt;div&amp;gt;form&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;span&amp;gt;div&amp;gt;div&amp;gt;label&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div&amp;gt;div' parentid='i42' tag='DIV' /&gt;" Guid="e878d2b1-05af-49cb-b6c2-aed33bea9530" InformativeScreenshot="e29c2b656efec4bc38c6083d980a48e3.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/vpbv5nLT1EaKJ-WVVTLDSA" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                        </uix:NClick.Target>
+                      </uix:NClick>
+                    </Sequence>
+                  </If.Else>
+                </If>
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'INPUT(2)'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,246" sap2010:WorkflowViewState.IdRef="NTypeInto_3" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="[frpMaximo]" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="TMJUsfS_oEK2s2dVMRI4Ww" DesignTimeRectangle="666, 560, 295, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl aria-labelledby='i48 i51' tag='INPUT' type='text' /&gt;" Guid="b7d6e3ba-1fc0-4155-9e22-f0f8817d7d1d" InformativeScreenshot="956a01caaa47a101c1836d2b47c76f13.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/1uUMyOxFsUyJC1_zgYgRug" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                </uix:NTypeInto>
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'INPUT(3)'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,246" sap2010:WorkflowViewState.IdRef="NTypeInto_4" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="Dado via NASA FIRMS" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="iKP78dzyDUGRNAsah6P6oA" DesignTimeRectangle="666, 510, 295, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl aria-labelledby='i53 i56' tag='INPUT' type='text' /&gt;" Guid="99b4f5e7-c7fe-4aee-bb2d-8f1a799d9038" InformativeScreenshot="707b41498bcaa8fbcd2281b4f78ba7b5.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/OHFOglifqkKgiToUX_nS4w" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                </uix:NTypeInto>
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'INPUT(4)'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,246" sap2010:WorkflowViewState.IdRef="NTypeInto_5" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="MODIS NRT · NASA FIRMS" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="hzVD3wy8Gky8RbRC0kxBYA" DesignTimeRectangle="666, 660, 295, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl aria-labelledby='i58 i61' tag='INPUT' type='text' /&gt;" Guid="d033c108-7d48-47ca-b591-1837827ab452" InformativeScreenshot="7d40b81e421c554c228bf71a8b10b663.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/ZAkI2hDd9Uyk5sl07OaK9w" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                </uix:NTypeInto>
+                <uix:NTypeInto ActivateBefore="True" ClickBeforeMode="Single" ClipboardMode="Never" DisplayName="Type Into 'TEXTAREA'" EmptyFieldMode="SingleLine" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,246" sap2010:WorkflowViewState.IdRef="NTypeInto_6" InteractionMode="SameAsCard" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Text="[&quot;Pipeline SkyGuard · &quot; + totalFocos + &quot; focos · &quot; + estadoPrincipal + &quot; · Nível &quot; + nivelAlerta + &quot; · &quot; + dataHoje + &quot; · FIAP ESW 4º Ano GS 2026&quot;]" Version="V5">
+                  <uix:NTypeInto.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="K-Mk5_8d6kaldCaec8Wgtw" DesignTimeRectangle="666, 810, 590, 24" ElementType="InputBox" ElementVisibilityArgument="Interactive" FullSelectorArgument="&lt;webctrl tag='TEXTAREA' /&gt;" Guid="11347393-0008-48ea-93a1-a1c00e616268" InformativeScreenshot="e29a1dec9f5bfc9be3d0e20da8f0ded9.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/h5xKJk2-kE2KOi5eYRGKJg" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="Selector" Version="V6" WaitForReadyArgument="Interactive" />
+                  </uix:NTypeInto.Target>
+                </uix:NTypeInto>
+                <uix:NClick ActivateBefore="True" ClickType="Single" DisplayName="Click 'Enviar'" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,194" sap2010:WorkflowViewState.IdRef="NClick_6" InteractionMode="SameAsCard" KeyModifiers="None" MouseButton="Left" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5">
+                  <uix:NClick.Target>
+                    <uix:TargetAnchorable BrowserURL="docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" ContentHash="-l17JlTuikS081dnVwcdHw" DesignTimeRectangle="666, 880, 41, 36" ElementType="Text" ElementVisibilityArgument="Interactive" FuzzySelectorArgument="&lt;webctrl aaname='Enviar' tag='SPAN' type='' class='NPEfkd RveJvd snByac' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' matching:class='fuzzy' fuzzylevel:class='0.0' check:innerText='Enviar' /&gt;" Guid="6927020c-f163-43bf-b43e-6fd775b077f8" InformativeScreenshot="dcfb967d255a4feef95eeb08cce496ac.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/7Gzua0ZBsEur9YS98g4E0Q" ScopeSelectorArgument="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" SearchSteps="FuzzySelector" Version="V6" WaitForReadyArgument="Interactive">
+                      <uix:TargetAnchorable.Anchors>
+                        <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                          <uix:Target DesignTimeRectangle="641, 879, 91, 38" ElementType="Button" FuzzySelectorArgument="&lt;webctrl aria-label='Enviar' aria-role='button' tag='DIV' type='' class='uArJ5e UQuaGc Y5sE8d VkkpIf QvWxOd' aaname='' matching:aria-label='fuzzy' fuzzylevel:aria-label='0.0' matching:aria-role='fuzzy' fuzzylevel:aria-role='0.0' matching:class='fuzzy' fuzzylevel:class='0.0' matching:aaname='fuzzy' fuzzylevel:aaname='0.0' check:innerText='Enviar' /&gt;" Guid="42230455-9bfc-4f3c-bd27-60596bd53116" SearchSteps="FuzzySelector" />
+                        </scg:List>
+                      </uix:TargetAnchorable.Anchors>
+                    </uix:TargetAnchorable>
+                  </uix:NClick.Target>
+                </uix:NClick>
+                <Delay Duration="00:00:03" sap:VirtualizedContainerService.HintSize="452,123" sap2010:WorkflowViewState.IdRef="Delay_5" />
+                <uix:NTakeScreenshot DisplayName="Take Screenshot" FileName="C:\Users\Vincius Yamashita\OneDrive\Documentos\Arquivos pessoais\Entregavel RPA\RPA - GS\evidencia_forms.png" FileNameMode="None" HealingAgentBehavior="SameAsCard" sap:VirtualizedContainerService.HintSize="452,277" sap2010:WorkflowViewState.IdRef="NTakeScreenshot_1" ScopeIdentifier="d1be9ee6-463f-4a89-b06f-44007d29ec6c" Version="V5" />
+                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="452,166" sap2010:WorkflowViewState.IdRef="LogMessage_3" Level="Info" Message="[&quot;[SKYGUARD] Formulário enviado com sucesso · &quot; + DateTime.Now.ToString(&quot;HH:mm:ss&quot;) + &quot; · Nível: &quot; + nivelAlerta + &quot; · Focos: &quot; + totalFocos]" />
+              </Sequence>
+            </ActivityAction>
+          </uix:NApplicationCard.Body>
+          <uix:NApplicationCard.OCREngine>
+            <ActivityFunc x:TypeArguments="sd:Image, scg:IEnumerable(scg:KeyValuePair(sd1:Rectangle, x:String))">
+              <ActivityFunc.Argument>
+                <DelegateInArgument x:TypeArguments="sd:Image" Name="Image" />
+              </ActivityFunc.Argument>
+            </ActivityFunc>
+          </uix:NApplicationCard.OCREngine>
+          <uix:NApplicationCard.TargetApp>
+            <uix:TargetApp Area="-8, -8, 1936, 1048" BrowserType="Chrome" ContentHash="Dd6G58uU9025JnM0YQdgCw" IconBase64="iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGfSURBVDhPrZOxSwJhGMZt7S8oamh0DApcHbr7B6KzrU0Fi/o8xaIxyHCoCFRKLjWCCqKGIM+gvGxNs2iLlrsIa6twCXqf+BT17jQI6oHf8B3v77l7Dz6H4z8jy3B6vei1P/9F0CMzuolGCfMRqoUYJF8GBzMxwtwiISgT5KCZr12LHpqDO7pM4CmVgCAjzZcFUieEyj1QuQVuKw2OjxolloJwGH3zEaJyGdjJEmT2te7L4G1pm5DeJ2SyhGymwfoa8Rd8Wgp4ZIapIKMH/nmMYcC3h9HpFTpjCx0r3IVm4bL7DknUVz2CXvWIenFSNFySoAc8gv7oEQ2YkUTjlc9a5AnhadgyNGYcSoLxYZfNjIvPzlYBP3QUiMa7XfqxgKe5giToV60VREO3i11X4MlpiKkFVFUNxfwVRhIKAgkFjwkFMBNX8JpQELPIahH9qgZSNYBzeoGtuII3u2yCNlIYbBcU4G/K9YJzvHSR7PhbBQB6chrKXM5pqKmXkOIKdrtIdeIKStxpFTSTL8B5ct2+TMk0hpIpuM1spmH9+3/NNxJ4y3Enc5wpAAAAAElFTkSuQmCC" InformativeScreenshot="83c8f79e5045b028cb3bc7af9008f041.jpg" Reference="1pb3N0ZJZE-7u8iWWl7FVg/mvl4TAC73kSBmbuMZWD7QA" Selector="&lt;html app='chrome.exe' title='SkyGuard — Registro de Alerta de Queimada' /&gt;" Url="https://docs.google.com/forms/d/e/1FAIpQLScy4bDSZJsBbtejpUhJ1F2_jTr1Khh5OEcL0P4BFouRjIHAlA/viewform" Version="V3">
+              <uix:TargetApp.Arguments>
+                <InArgument x:TypeArguments="x:String" />
+              </uix:TargetApp.Arguments>
+              <uix:TargetApp.WorkingDirectory>
+                <InArgument x:TypeArguments="x:String" />
+              </uix:TargetApp.WorkingDirectory>
+            </uix:TargetApp>
+          </uix:NApplicationCard.TargetApp>
+        </uix:NApplicationCard>
+      </Sequence>
+    </Sequence>
+  </Sequence>
+</Activity>

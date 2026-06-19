@@ -1,0 +1,6 @@
+{
+  "Name": "SkyGuard_RPA",
+  "ProjectType": "Process",
+  "Description": "Bot de monitoramento de queimadas via NASA FIRMS",
+  "MainFile": "Main.xaml"
+}
