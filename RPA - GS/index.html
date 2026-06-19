@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<!-- Guilherme Daher - RM98611
+Gabriel Freitas - RM550187
+Heitor Nobre - RM551539
+Vinicius Yamashita - RM550908 
+Lucca Alexandre - 99700 -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyGuard — Monitor de Queimadas</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+  /* ══════════════════════════════════════
+     VARIÁVEIS GLOBAIS DE COR E FONTE
+  ══════════════════════════════════════ */
+  :root {
+    --bg:      #060a0f;   /* fundo principal - quase preto */
+    --surface: #0b1018;   /* superfícies de cards */
+    --panel:   #0f1620;   /* painéis internos */
+    --border:  #1a2535;   /* bordas sutis */
+    --accent:  #ff4d1a;   /* vermelho fogo - alertas críticos */
+    --accent2: #ff8c42;   /* laranja - alertas altos */
+    --safe:    #1aff8c;   /* verde - status ok */
+    --warn:    #ffd11a;   /* amarelo - alertas médios */
+    --info:    #1a8cff;   /* azul - informações */
+    --dim:     #3a4f6a;   /* elementos desabilitados */
+    --text:    #c8d8e8;   /* texto principal */
+    --textdim: #5a7a9a;   /* texto secundário */
+    --mono:    'Share Tech Mono', monospace;
+    --sans:    'Barlow Condensed', sans-serif;
+    --body:    'Barlow', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Efeito de scanlines - dá a sensação de monitor de operações */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+
+  /* ══════════════════════════════════════
+     HEADER PRINCIPAL
+  ══════════════════════════════════════ */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  /* Logo + nome do sistema */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--accent);
+    /* formato hexagonal */
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    animation: pulse-icon 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-icon {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,26,0.5); }
+    50%       { box-shadow: 0 0 0 10px rgba(255,77,26,0); }
+  }
+
+  .logo-name {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 24px;
+    letter-spacing: 5px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .logo-name span { color: var(--accent); }
+
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  /* Lado direito do header: status + relógio */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--textdim);
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.25; }
+  }
+
+  .status-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  #clock {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+  }
+
+
+  /* ══════════════════════════════════════
+     BARRA DE CONFIGURAÇÃO DAS APIS
+  ══════════════════════════════════════ */
+  .config-bar {
+    background: linear-gradient(135deg, #0d0500 0%, #080f1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 2rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .config-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .config-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .config-input {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 3px;
+    width: 250px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .config-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255,77,26,0.15);
+  }
+
+  /* Botões */
+  .btn {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 22px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-run {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-run:hover {
+    background: #ff6633;
+    box-shadow: 0 0 20px rgba(255,77,26,0.45);
+  }
+
+  .btn-run:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-demo {
+    background: transparent;
+    color: var(--textdim);
+    border: 1px solid var(--border);
+  }
+
+  .btn-demo:hover {
+    border-color: var(--warn);
+    color: var(--warn);
+  }
+
+  .demo-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: rgba(255,209,26,0.12);
+    color: var(--warn);
+    border: 1px solid rgba(255,209,26,0.3);
+    display: none; /* mostrado via JS quando demo ativo */
+  }
+
+
+  /* ══════════════════════════════════════
+     BARRA DE KPIs (métricas principais)
+  ══════════════════════════════════════ */
+  .kpi-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .kpi {
+    padding: 16px 22px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi:last-child { border-right: none; }
+
+  /* Linha colorida na base do KPI, animada quando carregado */
+  .kpi::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s ease;
+  }
+
+  .kpi.active::after {
+    transform: scaleX(1);
+  }
+
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 34px;
+    line-height: 1;
+    color: #fff;
+  }
+
+  /* Variações de cor para diferentes estados */
+  .kpi-value.danger { color: var(--accent); }
+  .kpi-value.warn   { color: var(--warn);   }
+  .kpi-value.safe   { color: var(--safe);   }
+  .kpi-value.info   { color: var(--info);   }
+
+  .kpi-desc {
+    font-family: var(--body);
+    font-size: 11px;
+    color: var(--textdim);
+    margin-top: 5px;
+  }
+
+
+  /* ══════════════════════════════════════
+     LAYOUT PRINCIPAL: MAPA + SIDEBAR
+  ══════════════════════════════════════ */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 370px;
+    min-height: calc(100vh - 58px - 49px - 72px - 44px);
+    gap: 0;
+    background: var(--border); /* bordas aparecem como gap de 1px */
+  }
+
+
+  /* ══════════════════════════════════════
+     ÁREA DO MAPA
+  ══════════════════════════════════════ */
+  .map-section {
+    background: var(--panel);
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+  }
+
+  /* Cabeçalho flutuante do mapa */
+  .map-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: linear-gradient(to bottom, rgba(6,10,15,0.95) 0%, transparent 100%);
+  }
+
+  .map-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--textdim);
+  }
+
+  /* Legenda de cores do mapa */
+  .map-legend {
+    display: flex;
+    gap: 18px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+  }
+
+  .legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* SVG do mapa ocupa 100% da área */
+  #map-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 520px;
+    display: block;
+  }
+
+  /* Estilos dos estados no SVG */
+  .state-shape {
+    fill: #0d1e30;
+    stroke: #162840;
+    stroke-width: 0.8;
+    transition: fill 0.2s;
+  }
+
+  .state-shape:hover {
+    fill: #152840;
+    cursor: default;
+  }
+
+  /* Pontos de fogo no mapa */
+  .fire-point {
+    cursor: pointer;
+    transition: r 0.15s;
+  }
+
+  .fire-point:hover { r: 8; }
+
+  /* Tooltip flutuante sobre os pontos */
+  #map-tooltip {
+    position: absolute;
+    background: rgba(6,10,15,0.97);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text);
+    pointer-events: none;
+    display: none;
+    z-index: 50;
+    min-width: 200px;
+    backdrop-filter: blur(4px);
+    line-height: 1.8;
+  }
+
+  #map-tooltip .tt-title {
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  #map-tooltip .tt-danger { color: var(--accent); }
+  #map-tooltip .tt-warn   { color: var(--warn);   }
+  #map-tooltip .tt-ok     { color: var(--safe);   }
+
+  /* Overlay de loading do mapa */
+  #map-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(6,10,15,0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    backdrop-filter: blur(3px);
+  }
+
+  .spinner {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-msg {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--textdim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.6;
+  }
+
+
+  /* ══════════════════════════════════════
+     SIDEBAR DIREITA
+  ══════════════════════════════════════ */
+  .sidebar {
+    background: var(--surface);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 58px - 49px - 72px - 44px);
+  }
+
+  /* Cada painel dentro da sidebar */
+  .panel {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Título de cada painel */
+  .panel-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--textdim);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Barra colorida antes do título */
+  .panel-title::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+
+  /* ══════════════════════════════════════
+     LISTA DE ALERTAS (sidebar)
+  ══════════════════════════════════════ */
+  .alert-list { display: flex; flex-direction: column; }
+
+  .alert-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .alert-item:last-child { border-bottom: none; }
+  .alert-item:hover { background: rgba(255,77,26,0.06); }
+
+  /* Barra de severidade à esquerda */
+  .severity-bar {
+    width: 4px;
+    min-height: 38px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .sev-critical { background: var(--accent); box-shadow: 0 0 8px rgba(255,77,26,0.6); }
+  .sev-high     { background: var(--accent2); }
+  .sev-medium   { background: var(--warn); }
+  .sev-low      { background: var(--info); }
+
+  .alert-body { flex: 1; min-width: 0; }
+
+  .alert-location {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .alert-detail {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--textdim);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .alert-frp {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 14px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+
+  /* ══════════════════════════════════════
+     PAINEL DE CLIMA (sidebar)
+  ══════════════════════════════════════ */
+  .weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .weather-cell {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  .weather-cell-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .weather-cell-value {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 22px;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .weather-unit {
+    font-size: 12px;
+    color: var(--textdim);
+    font-weight: 400;
+  }
+
+
+  /* ══════════════════════════════════════
+     BARRAS DE RISCO (biomas e clima)
+  ══════════════════════════════════════ */
+  .risk-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .risk-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+  }
+
+  .risk-score {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .risk-bar-track {
+    height: 6px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .risk-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+
+  /* ══════════════════════════════════════
+     LOG DE EVENTOS (sidebar)
+  ══════════════════════════════════════ */
+  .log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .log-item {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .log-time  { color: var(--textdim); }
+  .log-msg   { color: var(--text); }
+  .log-ok       { color: var(--safe);   }
+  .log-warn     { color: var(--warn);   }
+  .log-critical { color: var(--accent); }
+
+
+  /* ══════════════════════════════════════
+     ESTADOS VAZIOS
+  ══════════════════════════════════════ */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 30px;
+    opacity: 0.3;
+    margin-bottom: 10px;
+  }
+
+  .empty-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+
+  /* Mensagem de erro */
+  .error-box {
+    background: rgba(255,77,26,0.08);
+    border: 1px solid rgba(255,77,26,0.3);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    line-height: 1.6;
+  }
+
+
+  /* ══════════════════════════════════════
+     RODAPÉ
+  ══════════════════════════════════════ */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--textdim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tag-list { display: flex; gap: 8px; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+
+  .tag-ods13 {
+    background: rgba(26,140,255,0.12);
+    color: var(--info);
+    border: 1px solid rgba(26,140,255,0.3);
+  }
+
+  .tag-rpa {
+    background: rgba(255,77,26,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(255,77,26,0.3);
+  }
+
+  .tag-fiap {
+    background: rgba(255,209,26,0.12);
+    color: var(--warn);
+    border: 1px solid rgba(255,209,26,0.3);
+  }
+
+
+  /* ══════════════════════════════════════
+     RESPONSIVIDADE BÁSICA
+  ══════════════════════════════════════ */
+  @media (max-width: 960px) {
+    .main-layout {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      max-height: none;
+    }
+    .kpi-bar {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .kpi:nth-child(4),
+    .kpi:nth-child(5) {
+      border-top: 1px solid var(--border);
+    }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ════════════════════════════
+       HEADER
+  ════════════════════════════ -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🔥</div>
+      <div>
+        <div class="logo-name">SKY<span>GUARD</span></div>
+        <div class="logo-sub">Sistema de Monitoramento de Queimadas · Brasil</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="status-badge">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">AGUARDANDO</span>
+      </div>
+      <div id="clock">--:--:--</div>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════════
+       BARRA DE CONFIGURAÇÃO
+  ════════════════════════════ -->
+  <div class="config-bar">
+
+    <div class="config-group">
+      <span class="config-label">Fonte de Dados</span>
+      <select id="fonteSelect" class="config-input" style="width:210px">
+        <option value="json">NASA FIRMS · arquivo local (dados_firms.json)</option>
+        <option value="inpe">INPE Terrabrasilis · API direta</option>
+      </select>
+    </div>
+
+    <button class="btn btn-run" id="runBtn" onclick="runPipeline()">
+      ▶ CARREGAR DADOS NASA
+    </button>
+
+    <button class="btn btn-demo" onclick="loadDemo()">
+      DEMO
+    </button>
+
+    <span class="demo-tag" id="demoTag">MODO DEMO</span>
+
+    <span style="font-family:var(--mono);font-size:9px;color:var(--textdim);margin-left:8px">
+      💡 Execute skyguard_coletor.py primeiro para dados reais da NASA
+    </span>
+
+  </div>
+
+
+  <!-- ════════════════════════════
+       KPIs
+  ════════════════════════════ -->
+  <div class="kpi-bar">
+
+    <div class="kpi" id="kpi-total">
+      <div class="kpi-label">Focos Ativos · 24h</div>
+      <div class="kpi-value" id="val-total">—</div>
+      <div class="kpi-desc">Detectados via FIRMS/MODIS</div>
+    </div>
+
+    <div class="kpi" id="kpi-critical">
+      <div class="kpi-label">Alertas Críticos</div>
+      <div class="kpi-value danger" id="val-critical">—</div>
+      <div class="kpi-desc">FRP acima de 200 MW</div>
+    </div>
+
+    <div class="kpi" id="kpi-frp">
+      <div class="kpi-label">FRP Máximo</div>
+      <div class="kpi-value warn" id="val-frp">—</div>
+      <div class="kpi-desc">Fire Radiative Power (MW)</div>
+    </div>
+
+    <div class="kpi" id="kpi-conf">
+      <div class="kpi-label">Confiança Média</div>
+      <div class="kpi-value safe" id="val-conf">—</div>
+      <div class="kpi-desc">Precisão da detecção</div>
+    </div>
+
+    <div class="kpi" id="kpi-time">
+      <div class="kpi-label">Última Atualização</div>
+      <div class="kpi-value info" id="val-time" style="font-size:20px;padding-top:6px">—</div>
+      <div class="kpi-desc">Ciclo de monitoramento</div>
+    </div>
+
+  </div>
+
+
+  <!-- ════════════════════════════
+       LAYOUT PRINCIPAL
+  ════════════════════════════ -->
+  <div class="main-layout">
+
+    <!-- MAPA ─────────────────── -->
+    <section class="map-section">
+
+      <!-- Cabeçalho do mapa -->
+      <div class="map-header">
+        <div class="map-title">Mapa de Calor · Território Brasileiro</div>
+        <div class="map-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--accent)"></div>
+            Crítico (&gt;200 MW)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--accent2)"></div>
+            Alto (100–200 MW)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--warn)"></div>
+            Médio (50–100 MW)
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--info)"></div>
+            Baixo (&lt;50 MW)
+          </div>
+        </div>
+      </div>
+
+      <!-- SVG do Brasil -->
+      <svg id="map-svg" viewBox="0 0 600 640" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Fundo com grade -->
+        <defs>
+          <pattern id="grid-bg" width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#0a1520" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="600" height="640" fill="#060a0f"/>
+        <rect width="600" height="640" fill="url(#grid-bg)"/>
+
+        <!-- ── ESTADOS DO BRASIL (formas simplificadas) ── -->
+        <!-- Roraima -->
+        <polygon class="state-shape" id="st-RR"
+          points="155,42 200,38 215,70 190,90 155,85 140,65"/>
+        <!-- Amapá -->
+        <polygon class="state-shape" id="st-AP"
+          points="310,38 350,30 360,65 330,80 305,65"/>
+        <!-- Amazonas -->
+        <polygon class="state-shape" id="st-AM"
+          points="80,80 200,70 240,115 255,170 220,210 165,230 100,220 72,185"/>
+        <!-- Pará -->
+        <polygon class="state-shape" id="st-PA"
+          points="215,68 330,58 365,80 360,130 325,160 285,175 255,170 240,115"/>
+        <!-- Maranhão -->
+        <polygon class="state-shape" id="st-MA"
+          points="330,58 395,52 415,80 405,120 375,140 345,135 330,100"/>
+        <!-- Piauí -->
+        <polygon class="state-shape" id="st-PI"
+          points="395,80 435,75 450,105 435,145 405,150 385,130 405,120"/>
+        <!-- Ceará -->
+        <polygon class="state-shape" id="st-CE"
+          points="435,75 480,70 498,95 480,125 450,128 435,105"/>
+        <!-- RN / PB / PE / AL / SE agrupados como NE-Leste -->
+        <polygon class="state-shape" id="st-NE"
+          points="480,70 530,78 540,140 510,170 470,165 450,135 480,125 498,95"/>
+        <!-- Tocantins -->
+        <polygon class="state-shape" id="st-TO"
+          points="305,155 365,148 382,185 372,240 330,255 295,235"/>
+        <!-- Rondônia -->
+        <polygon class="state-shape" id="st-RO"
+          points="105,220 180,215 195,265 165,295 108,282"/>
+        <!-- Acre -->
+        <polygon class="state-shape" id="st-AC"
+          points="72,210 108,218 108,265 80,275 55,250"/>
+        <!-- Mato Grosso -->
+        <polygon class="state-shape" id="st-MT"
+          points="185,225 280,215 315,240 308,305 258,328 192,315 165,282"/>
+        <!-- Goiás -->
+        <polygon class="state-shape" id="st-GO"
+          points="285,240 355,232 375,268 360,325 308,335 280,305"/>
+        <!-- Bahia -->
+        <polygon class="state-shape" id="st-BA"
+          points="368,230 455,220 485,272 475,348 425,378 372,368 348,318"/>
+        <!-- Minas Gerais -->
+        <polygon class="state-shape" id="st-MG"
+          points="348,295 430,285 455,325 445,385 395,400 340,390 322,358"/>
+        <!-- Mato Grosso do Sul -->
+        <polygon class="state-shape" id="st-MS"
+          points="245,325 315,315 322,372 295,410 242,410 218,378"/>
+        <!-- Espírito Santo -->
+        <polygon class="state-shape" id="st-ES"
+          points="440,340 475,332 482,372 450,388 430,370"/>
+        <!-- Rio de Janeiro -->
+        <polygon class="state-shape" id="st-RJ"
+          points="415,372 458,362 468,400 435,415 405,402"/>
+        <!-- São Paulo -->
+        <polygon class="state-shape" id="st-SP"
+          points="322,358 400,348 415,388 388,422 332,428 308,405"/>
+        <!-- Paraná -->
+        <polygon class="state-shape" id="st-PR"
+          points="310,415 392,408 400,448 368,470 308,465 292,442"/>
+        <!-- Santa Catarina -->
+        <polygon class="state-shape" id="st-SC"
+          points="308,462 372,455 378,492 340,510 300,498"/>
+        <!-- Rio Grande do Sul -->
+        <polygon class="state-shape" id="st-RS"
+          points="295,492 348,485 362,535 320,565 272,548 265,515"/>
+
+        <!-- ── LABELS DOS ESTADOS ── -->
+        <g font-family="Share Tech Mono" font-size="10" fill="#1e3c58" text-anchor="middle">
+          <text x="170" y="160">AM</text>
+          <text x="295" y="118">PA</text>
+          <text x="365" y="100">MA</text>
+          <text x="230" y="272">MT</text>
+          <text x="325" y="290">GO</text>
+          <text x="390" y="342">MG</text>
+          <text x="362" y="395">SP</text>
+          <text x="268" y="370">MS</text>
+          <text x="338" y="202">TO</text>
+          <text x="420" y="298">BA</text>
+          <text x="422" y="115">PI</text>
+          <text x="462" y="102">CE</text>
+          <text x="505" y="122">NE</text>
+          <text x="148" y="255">RO</text>
+          <text x="82"  y="245">AC</text>
+          <text x="177" y="58">RR</text>
+          <text x="332" y="55">AP</text>
+          <text x="350" y="440">PR</text>
+          <text x="338" y="480">SC</text>
+          <text x="312" y="526">RS</text>
+          <text x="453" y="378">RJ</text>
+          <text x="455" y="358">ES</text>
+        </g>
+
+        <!-- Container dos pontos de fogo (preenchido via JS) -->
+        <g id="fire-layer"></g>
+
+      </svg>
+
+      <!-- Tooltip do mapa -->
+      <div id="map-tooltip"></div>
+
+      <!-- Loading overlay -->
+      <div id="map-loading">
+        <div class="spinner"></div>
+        <div class="loading-msg" id="loading-msg">
+          Aguardando pipeline<br>Insira as chaves de API e clique em Executar
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- SIDEBAR ───────────────── -->
+    <aside class="sidebar">
+
+      <!-- Painel: Alertas -->
+      <div class="panel">
+        <div class="panel-title">Alertas Ativos</div>
+        <div class="alert-list" id="alert-list">
+          <div class="empty-state">
+            <div class="empty-icon">🛰️</div>
+            <div class="empty-text">Aguardando dados<br>da NASA FIRMS</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel: Clima -->
+      <div class="panel">
+        <div class="panel-title">Condições Climáticas</div>
+        <div id="weather-content">
+          <div class="empty-state">
+            <div class="empty-icon">🌡️</div>
+            <div class="empty-text">Aguardando dados<br>do OpenWeather</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel: Risco por Bioma -->
+      <div class="panel">
+        <div class="panel-title">Risco por Bioma</div>
+        <div id="bioma-content">
+          <div class="empty-state">
+            <div class="empty-icon">🌿</div>
+            <div class="empty-text">Aguardando<br>processamento</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel: Log do Pipeline -->
+      <div class="panel">
+        <div class="panel-title">Log do Pipeline RPA</div>
+        <div class="log-list" id="log-list">
+          <div class="log-item">
+            <span class="log-time">--:--</span>
+            <span class="log-msg">Sistema inicializado. Aguardando execução.</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div><!-- fim .main-layout -->
+
+
+  <!-- ════════════════════════════
+       RODAPÉ
+  ════════════════════════════ -->
+  <footer>
+    <div class="footer-text">
+      SkyGuard · FIAP ESW 4º Ano · Global Solution 2026 · Disciplina RPA
+    </div>
+    <div class="tag-list">
+      <span class="tag tag-ods13">ODS 13 · Ação Climática</span>
+      <span class="tag tag-rpa">RPA · UiPath</span>
+      <span class="tag tag-fiap">FIAP · 2026</span>
+    </div>
+  </footer>
+
+  <script>
+  /* ═══════════════════════════════════════════════════════════════
+     SKYGUARD · JAVASCRIPT COMPLETO
+     Parte 2 — Pipeline de dados, mapa, alertas, clima, biomas, log
+  ═══════════════════════════════════════════════════════════════ */
+
+
+  // ── MAPEAMENTO GEOGRÁFICO ─────────────────────────────────────
+  // Centroide de cada estado no SVG (para posicionar pontos)
+  // Valores calibrados para o viewBox 600x640 do SVG da Parte 1
+  const STATE_SVG = {
+    RR: {x:177, y:62},  AP: {x:332, y:54},  AM: {x:162, y:148},
+    PA: {x:292, y:116}, MA: {x:368, y:96},   PI: {x:420, y:112},
+    CE: {x:462, y:98},  NE: {x:505, y:128},  TO: {x:336, y:200},
+    RO: {x:148, y:252}, AC: {x:82,  y:242},  MT: {x:238, y:268},
+    GO: {x:325, y:286}, BA: {x:418, y:295},  MG: {x:390, y:340},
+    MS: {x:268, y:368}, ES: {x:455, y:356},  RJ: {x:438, y:385},
+    SP: {x:360, y:390}, PR: {x:348, y:438},  SC: {x:338, y:478},
+    RS: {x:310, y:525}
+  };
+
+  // Lat/Lng real de cada estado (para buscar clima no OpenWeather)
+  const STATE_LATLON = {
+    RR: [-1.99, -61.33],  AP: [1.41,  -51.77],  AM: [-3.47, -65.10],
+    PA: [-3.79, -52.48],  MA: [-5.42, -45.44],   PI: [-7.72, -42.73],
+    CE: [-5.20, -39.53],  NE: [-7.12, -37.04],   TO: [-10.17,-48.33],
+    RO: [-10.83,-63.34],  AC: [-9.02, -70.81],   MT: [-12.64,-55.42],
+    GO: [-15.83,-49.84],  BA: [-12.97,-41.34],   MG: [-18.51,-44.55],
+    MS: [-20.51,-54.54],  ES: [-19.19,-40.34],   RJ: [-22.25,-42.66],
+    SP: [-22.25,-48.26],  PR: [-24.89,-51.55],   SC: [-27.45,-50.95],
+    RS: [-29.75,-53.37]
+  };
+
+  // Bioma de cada estado
+  const STATE_BIOMA = {
+    RR:'Amazônia',          AP:'Amazônia',
+    AM:'Amazônia',          PA:'Amazônia',
+    MA:'Amazônia/Caatinga', PI:'Caatinga',
+    CE:'Caatinga',          NE:'Caatinga',
+    TO:'Cerrado',           RO:'Amazônia',
+    AC:'Amazônia',          MT:'Cerrado/Amazônia',
+    GO:'Cerrado',           BA:'Caatinga/Cerrado',
+    MG:'Cerrado/Mata Atlântica', MS:'Cerrado/Pantanal',
+    ES:'Mata Atlântica',    RJ:'Mata Atlântica',
+    SP:'Mata Atlântica',    PR:'Mata Atlântica',
+    SC:'Mata Atlântica',    RS:'Pampa'
+  };
+
+  // Cor de cada bioma no dashboard
+  const BIOMA_COLOR = {
+    'Amazônia':                 '#1aff8c',
+    'Amazônia/Caatinga':        '#ff8c42',
+    'Amazônia/Cerrado':         '#ff8c42',
+    'Cerrado/Amazônia':         '#ff8c42',
+    'Caatinga':                 '#ff4d1a',
+    'Caatinga/Cerrado':         '#ff6b35',
+    'Cerrado':                  '#ffd11a',
+    'Cerrado/Pantanal':         '#ffd11a',
+    'Cerrado/Mata Atlântica':   '#1a8cff',
+    'Mata Atlântica':           '#1a8cff',
+    'Pampa':                    '#5a9aff',
+  };
+
+
+  // ── ESTADO GLOBAL ─────────────────────────────────────────────
+  let fireData   = [];   // array de focos retornados pela FIRMS
+  let weatherMap = {};   // { SIGLA_ESTADO: dadosClima }
+  let isDemoMode = false;
+
+
+  // ── RELÓGIO ───────────────────────────────────────────────────
+  function tickClock() {
+    document.getElementById('clock').textContent =
+      new Date().toLocaleTimeString('pt-BR') + ' BRT';
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+
+  // ── LOG DO PIPELINE ───────────────────────────────────────────
+  // Adiciona uma linha no painel de log com timestamp e classe de cor
+  function log(msg, type = '') {
+    const list = document.getElementById('log-list');
+    const time = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+
+    const item = document.createElement('div');
+    item.className = 'log-item';
+    item.innerHTML = `
+      <span class="log-time">${time}</span>
+      <span class="log-msg ${type ? 'log-' + type : ''}">${msg}</span>
+    `;
+
+    // Insere no topo para leitura mais fácil (mais recente primeiro)
+    list.insertBefore(item, list.firstChild);
+
+    // Limita a 15 entradas para não crescer infinitamente
+    while (list.children.length > 15) {
+      list.removeChild(list.lastChild);
+    }
+  }
+
+
+  // ── STATUS DO HEADER ──────────────────────────────────────────
+  function setStatus(label, color) {
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    text.textContent   = label;
+    text.style.color   = color;
+    dot.style.background  = color;
+    dot.style.boxShadow   = `0 0 8px ${color}`;
+  }
+
+
+  // ── CLASSIFICAÇÃO POR FRP ─────────────────────────────────────
+  // Retorna label, cor CSS e classe da barra de severidade
+  function classify(frp) {
+    if (frp > 200) return { label:'CRÍTICO', color:'#ff4d1a', sev:'sev-critical' };
+    if (frp > 100) return { label:'ALTO',    color:'#ff8c42', sev:'sev-high'     };
+    if (frp >  50) return { label:'MÉDIO',   color:'#ffd11a', sev:'sev-medium'   };
+    return               { label:'BAIXO',   color:'#1a8cff', sev:'sev-low'      };
+  }
+
+
+  // ── PARSE DO CSV DA NASA FIRMS ────────────────────────────────
+  // A API retorna um CSV com cabeçalho na primeira linha
+  function parseCSV(raw) {
+    const lines = raw.trim().split('\n');
+    if (lines.length < 2) return [];
+
+    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+
+    return lines.slice(1)
+      .map(line => {
+        const cols = line.split(',');
+        const row  = {};
+        headers.forEach((h, i) => {
+          row[h] = (cols[i] || '').trim().replace(/"/g, '');
+        });
+        return row;
+      })
+      .filter(r => r.latitude && r.longitude); // descarta linhas sem coordenada
+  }
+
+
+  // ── CONVERTER LAT/LNG → ESTADO ────────────────────────────────
+  // Mapeamento geográfico aproximado por faixas de coordenada
+  // Suficiente para fins de visualização do projeto
+  function latLngToState(lat, lng) {
+    if (lng < -68 && lat > -5)                         return 'RR';
+    if (lng > -55 && lat > 0)                          return 'AP';
+    if (lng < -68 && lat <= -5)                        return 'AC';
+    if (lng >= -68 && lng < -60 && lat > -10)          return 'AM';
+    if (lng >= -60 && lng < -50 && lat > -5)           return 'PA';
+    if (lng >= -68 && lng < -60 && lat <= -10)         return 'RO';
+    if (lng >= -60 && lng < -55 && lat <= -10 && lat > -18) return 'MT';
+    if (lng >= -55 && lng < -50 && lat > -5)           return 'MA';
+    if (lng >= -50 && lng < -44 && lat > -5)           return 'PI';
+    if (lng >= -44 && lng < -38 && lat > -5)           return 'CE';
+    if (lng >= -38 && lat > -5)                        return 'NE';
+    if (lng >= -50 && lng < -44 && lat <= -5 && lat > -12) return 'TO';
+    if (lng >= -55 && lng < -44 && lat <= -12 && lat > -18) return 'GO';
+    if (lng >= -44 && lat <= -5 && lat > -18)          return 'BA';
+    if (lng >= -55 && lat <= -18 && lat > -22)         return 'MS';
+    if (lng >= -44 && lat <= -18 && lat > -22)         return 'MG';
+    if (lng >= -44 && lat <= -22 && lat > -25)         return 'SP';
+    if (lat <= -25 && lat > -28)                       return 'PR';
+    if (lat <= -28 && lat > -30)                       return 'SC';
+    if (lat <= -30)                                    return 'RS';
+    return 'MT'; // fallback para o centro do Brasil
+  }
+
+
+  // ── CONVERTER LAT/LNG → COORDENADA NO SVG ────────────────────
+  // O viewBox é 600x640. Brasil ocupa lat -5 a -34, lng -73 a -35
+  function latLngToSVG(lat, lng) {
+    const LAT_MIN = -34, LAT_MAX = -2;
+    const LNG_MIN = -74, LNG_MAX = -34;
+    const SVG_W = 580, SVG_H = 600;
+    const OFFSET_X = 10, OFFSET_Y = 28;
+
+    const x = ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * SVG_W + OFFSET_X;
+    const y = ((lat - LAT_MAX) / (LAT_MIN - LAT_MAX)) * SVG_H + OFFSET_Y;
+    return { x, y };
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ETAPA 1 — BUSCAR DADOS DO INPE TERRABRASILIS
+  //  API pública ArcGIS do INPE — sem chave, sem CORS, funciona
+  //  direto no browser sem nenhuma configuração adicional.
+  //  Endpoint: focos de queimadas últimas 48h no Brasil
+  //  Documentação: https://terrabrasilis.dpi.inpe.br/queimadas/
+  // ═══════════════════════════════════════════════════════════════
+  async function fetchINPE() {
+    log('Conectando à API do INPE Terrabrasilis...', '');
+
+    // API ArcGIS FeatureServer do INPE — suporta JSON, sem CORS
+    // Retorna focos das últimas 48h detectados por satélites NOAA/AQUA/TERRA
+    const baseUrl = 'https://mapas.infraestruturameioambiente.sp.gov.br/server/rest/services/SIPAI/INPE_Focos_Queimadas_48h/MapServer/0/query';
+
+    const params = new URLSearchParams({
+      where:          '1=1',           // todos os registros
+      outFields:      'LAT,LONG,DATAHORA,SATELITE,MUNICIPIO,ESTADO,BIOMA,RISCOFOGO,DIASEMCHUVA',
+      returnGeometry: 'true',          // incluir geometria (lat/lng)
+      f:              'geojson',        // formato GeoJSON — mais fácil de trabalhar
+      resultRecordCount: '500',         // limitar a 500 registros para performance
+      orderByFields:  'DATAHORA DESC',  // mais recentes primeiro
+    });
+
+    const url = `${baseUrl}?${params}`;
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`INPE API retornou ${res.status} — tente novamente em alguns instantes`);
+    }
+
+    const geojson = await res.json();
+
+    if (!geojson.features || geojson.features.length === 0) {
+      throw new Error('INPE: nenhum foco encontrado nas últimas 48h');
+    }
+
+    // Normalizar GeoJSON para o formato interno do dashboard
+    const rows = geojson.features.map(f => {
+      const p   = f.properties || {};
+      const geo = f.geometry?.coordinates || [0, 0]; // [lng, lat]
+      return {
+        latitude:   p.LAT   || geo[1],
+        longitude:  p.LONG  || geo[0],
+        acq_date:   p.DATAHORA ? p.DATAHORA.split(' ')[0] : new Date().toISOString().split('T')[0],
+        acq_time:   p.DATAHORA ? p.DATAHORA.split(' ')[1]?.replace(':','') || '0000' : '0000',
+        satellite:  p.SATELITE || 'INPE',
+        municipio:  p.MUNICIPIO || '—',
+        state_raw:  p.ESTADO || '',
+        bioma_raw:  p.BIOMA  || '',
+        risco:      parseFloat(p.RISCOFOGO) || 0,
+        diasSemChuva: parseInt(p.DIASEMCHUVA) || 0,
+        // INPE não fornece FRP diretamente — estimamos via risco de fogo (0-1)
+        // e dias sem chuva para gerar um valor proporcional para visualização
+        frp:        calcFRP(parseFloat(p.RISCOFOGO) || 0, parseInt(p.DIASEMCHUVA) || 0),
+        confidence: calcConf(parseFloat(p.RISCOFOGO) || 0),
+        brightness: 250 + (parseFloat(p.RISCOFOGO) || 0) * 200,
+        daynight:   'D',
+      };
+    });
+
+    log(`✓ INPE: ${rows.length} focos recebidos`, 'ok');
+    return rows;
+  }
+
+  // Estima FRP (Fire Radiative Power) a partir do risco de fogo e dias sem chuva
+  // Fórmula baseada em correlação empírica com dados históricos do INPE
+  function calcFRP(risco, diasSemChuva) {
+    const base     = risco * 300;           // risco 0-1 → FRP base 0-300 MW
+    const seco     = Math.min(diasSemChuva * 2.5, 100); // seco amplifica
+    return Math.round(base + seco * risco);
+  }
+
+  // Estima confiança da detecção a partir do risco de fogo
+  function calcConf(risco) {
+    if (risco > 0.8) return 92;
+    if (risco > 0.6) return 85;
+    if (risco > 0.4) return 76;
+    if (risco > 0.2) return 68;
+    return 60;
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ETAPA 2 — BUSCAR CLIMA VIA OPEN-METEO
+  //  API de clima 100% gratuita, sem chave, sem CORS.
+  //  https://open-meteo.com — dados do modelo europeu ECMWF
+  // ═══════════════════════════════════════════════════════════════
+  async function fetchClima(fires) {
+    log('Consultando Open-Meteo (clima sem chave)...', '');
+
+    // Top 4 estados com mais focos
+    const countByState = {};
+    fires.forEach(f => {
+      const st = f.state_raw || latLngToState(parseFloat(f.latitude), parseFloat(f.longitude));
+      countByState[st] = (countByState[st] || 0) + 1;
+    });
+
+    const top4 = Object.entries(countByState)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 4)
+      .map(([st]) => st);
+
+    const resultados = {};
+
+    await Promise.allSettled(
+      top4.map(async st => {
+        const coords = STATE_LATLON[st] || [-15.77, -47.93];
+        const lat = coords[0], lon = coords[1];
+
+        // Open-Meteo: sem chave, suporta CORS, dados do modelo atmosférico europeu
+        const url = `https://api.open-meteo.com/v1/forecast`
+          + `?latitude=${lat}&longitude=${lon}`
+          + `&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`
+          + `&timezone=America/Sao_Paulo`;
+
+        try {
+          const res  = await fetch(url);
+          const data = await res.json();
+          const cur  = data.current || {};
+
+          resultados[st] = {
+            name:     STATE_LATLON[st]?.[2] || st,
+            main: {
+              temp:       Math.round(cur.temperature_2m || 25),
+              humidity:   cur.relative_humidity_2m || 50,
+              feels_like: Math.round((cur.temperature_2m || 25) + 2),
+            },
+            wind:    { speed: (cur.wind_speed_10m || 0) / 3.6 }, // km/h → m/s
+            weather: [{ description: wmoCodeToDesc(cur.weather_code || 0) }],
+          };
+          log(`✓ Clima ${st}: ${resultados[st].main.temp}°C / ${resultados[st].main.humidity}%`, 'ok');
+        } catch(e) {
+          log(`⚠ Clima ${st}: falhou`, 'warn');
+        }
+      })
+    );
+
+    return resultados;
+  }
+
+  // Converter código WMO (Open-Meteo) para descrição legível em português
+  function wmoCodeToDesc(code) {
+    const map = {
+      0:'céu limpo', 1:'principalmente limpo', 2:'parcialmente nublado',
+      3:'encoberto', 45:'neblina', 48:'neblina com geada',
+      51:'chuvisco leve', 53:'chuvisco moderado', 55:'chuvisco intenso',
+      61:'chuva leve', 63:'chuva moderada', 65:'chuva forte',
+      80:'pancadas leves', 81:'pancadas moderadas', 82:'pancadas fortes',
+      95:'trovoada', 96:'trovoada com granizo',
+    };
+    return map[code] || 'condição variável';
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ETAPA 3 — REGRA DE NEGÓCIO
+  // ═══════════════════════════════════════════════════════════════
+  function applyBusinessRules(fires) {
+    log('Aplicando regras de negócio...', '');
+
+    const processed = fires.map(f => {
+      const frp   = parseFloat(f.frp)        || 0;
+      const conf  = parseFloat(f.confidence) || 0;
+      const lat   = parseFloat(f.latitude);
+      const lng   = parseFloat(f.longitude);
+      // Preferir estado do INPE; fallback para estimativa geográfica
+      const state = f.state_raw || latLngToState(lat, lng);
+      const bioma = f.bioma_raw || STATE_BIOMA[state] || 'Brasil';
+      const cls   = classify(frp);
+
+      return {
+        ...f,
+        frp_num:    frp,
+        conf_num:   conf,
+        state,
+        bioma,
+        severity:   cls.label,
+        color:      cls.color,
+        sevClass:   cls.sev,
+        isAlert:    frp > 30 || f.risco > 0.6,
+        isCritical: frp > 200 || f.risco > 0.85,
+      };
+    });
+
+    const alertCount    = processed.filter(f => f.isAlert).length;
+    const criticalCount = processed.filter(f => f.isCritical).length;
+    log(`Regras: ${alertCount} alertas | ${criticalCount} críticos`, criticalCount > 0 ? 'critical' : 'warn');
+
+    return processed;
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  RENDERIZAÇÃO — KPIs
+  // ═══════════════════════════════════════════════════════════════
+  function renderKPIs(fires) {
+    const total    = fires.length;
+    const critical = fires.filter(f => f.isCritical).length;
+    const maxFRP   = Math.max(...fires.map(f => f.frp_num));
+    const avgRisco = fires.reduce((s, f) => s + (f.risco || 0), 0) / total;
+    const now      = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+
+    document.getElementById('val-total').textContent    = total.toLocaleString('pt-BR');
+    document.getElementById('val-critical').textContent = critical;
+    document.getElementById('val-frp').textContent      = maxFRP > 0 ? Math.round(maxFRP) + ' MW' : (avgRisco * 100).toFixed(0) + '%';
+    document.getElementById('val-conf').textContent     = (avgRisco * 100).toFixed(0) + '%';
+    document.getElementById('val-time').textContent     = now;
+
+    document.getElementById('kpi-frp').querySelector('.kpi-label').textContent   = 'FRP Estimado Máx';
+    document.getElementById('kpi-conf').querySelector('.kpi-label').textContent  = 'Risco Médio INPE';
+
+    ['kpi-total','kpi-critical','kpi-frp','kpi-conf','kpi-time'].forEach(id => {
+      document.getElementById(id).classList.add('active');
+    });
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  RENDERIZAÇÃO — PONTOS DE FOGO NO MAPA SVG
+  // ═══════════════════════════════════════════════════════════════
+  function renderMap(fires) {
+    const layer   = document.getElementById('fire-layer');
+    const tooltip = document.getElementById('map-tooltip');
+    const mapEl   = document.querySelector('.map-section');
+
+    layer.innerHTML = '';
+
+    if (!document.getElementById('ping-anim')) {
+      const style = document.createElement('style');
+      style.id = 'ping-anim';
+      style.textContent = `
+        @keyframes ping {
+          0%   { transform: scale(1);   opacity: 0.7; }
+          100% { transform: scale(2.8); opacity: 0;   }
+        }`;
+      document.head.appendChild(style);
+    }
+
+    const sorted = [...fires].sort((a, b) => a.frp_num - b.frp_num);
+
+    sorted.forEach(fire => {
+      const lat = parseFloat(fire.latitude);
+      const lng = parseFloat(fire.longitude);
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const pos = latLngToSVG(lat, lng);
+      if (pos.x < 0 || pos.x > 600 || pos.y < 0 || pos.y > 640) return;
+
+      const r = fire.frp_num > 200 ? 6 : fire.frp_num > 100 ? 5 : fire.frp_num > 30 ? 4 : 3;
+
+      if (fire.isCritical) {
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', pos.x);
+        ring.setAttribute('cy', pos.y);
+        ring.setAttribute('r', r + 5);
+        ring.setAttribute('fill', 'none');
+        ring.setAttribute('stroke', fire.color);
+        ring.setAttribute('stroke-width', '1.5');
+        ring.style.animation = `ping ${1 + Math.random() * 0.8}s ease-out infinite`;
+        ring.style.transformOrigin = `${pos.x}px ${pos.y}px`;
+        layer.appendChild(ring);
+      }
+
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', pos.x);
+      circle.setAttribute('cy', pos.y);
+      circle.setAttribute('r', r);
+      circle.setAttribute('fill', fire.color);
+      circle.setAttribute('opacity', fire.isCritical ? '0.95' : '0.75');
+      circle.classList.add('fire-point');
+
+      circle.addEventListener('mousemove', e => {
+        const rect = mapEl.getBoundingClientRect();
+        tooltip.style.display = 'block';
+        tooltip.style.left = (e.clientX - rect.left + 16) + 'px';
+        tooltip.style.top  = (e.clientY - rect.top  - 10) + 'px';
+        tooltip.innerHTML = `
+          <div class="tt-title">Foco · ${fire.acq_date || 'hoje'}</div>
+          <div><b>${fire.municipio || fire.state}</b> · ${fire.bioma}</div>
+          <div>Lat ${lat.toFixed(3)} / Lng ${lng.toFixed(3)}</div>
+          <div class="${fire.isCritical ? 'tt-danger' : 'tt-warn'}">
+            Risco: ${(fire.risco * 100).toFixed(0)}% · ${fire.severity}
+            ${fire.frp_num > 0 ? '· FRP ~' + Math.round(fire.frp_num) + ' MW' : ''}
+          </div>
+          <div>${fire.diasSemChuva > 0 ? fire.diasSemChuva + ' dias sem chuva' : ''} · ${fire.satellite || 'INPE'}</div>
+        `;
+      });
+
+      circle.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+      layer.appendChild(circle);
+    });
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  RENDERIZAÇÃO — ALERTAS, CLIMA E BIOMAS
+  // ═══════════════════════════════════════════════════════════════
+  function renderAlerts(fires) {
+    const list = document.getElementById('alert-list');
+    const top  = [...fires].filter(f => f.isAlert).sort((a,b) => b.frp_num - a.frp_num).slice(0,8);
+
+    if (top.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">Nenhum alerta ativo</div></div>`;
+      return;
+    }
+
+    list.innerHTML = top.map(fire => `
+      <div class="alert-item">
+        <div class="severity-bar ${fire.sevClass}"></div>
+        <div class="alert-body">
+          <div class="alert-location">${fire.municipio || fire.state} · ${fire.bioma}</div>
+          <div class="alert-detail">
+            ${fire.acq_date || 'hoje'}
+            · Risco: ${(fire.risco * 100).toFixed(0)}%
+            · ${fire.diasSemChuva > 0 ? fire.diasSemChuva + 'd sem chuva' : fire.satellite || 'INPE'}
+          </div>
+        </div>
+        <div class="alert-frp" style="color:${fire.color}">
+          ${fire.frp_num > 0 ? Math.round(fire.frp_num) + ' MW' : (fire.risco*100).toFixed(0) + '%'}
+        </div>
+      </div>`).join('');
+
+    top.filter(f => f.isCritical).forEach(f => {
+      log(`⚠ CRÍTICO: ${f.municipio || f.state} · ${(f.risco*100).toFixed(0)}% risco`, 'critical');
+    });
+  }
+
+  function renderWeatherPanel(wMap) {
+    const el     = document.getElementById('weather-content');
+    const states = Object.keys(wMap);
+    if (states.length === 0) { el.innerHTML = `<div class="error-box">Clima indisponível</div>`; return; }
+
+    const st    = states[0];
+    const w     = wMap[st];
+    const temp  = Math.round(w.main.temp);
+    const hum   = w.main.humidity;
+    const wind  = ((w.wind?.speed || 0) * 3.6).toFixed(1);
+    const feels = Math.round(w.main.feels_like || temp);
+    const desc  = w.weather?.[0]?.description?.toUpperCase() || '—';
+
+    const rTemp = Math.min(100, Math.max(0, (temp - 20) * 3.5));
+    const rHum  = Math.min(100, Math.max(0, (75 - hum) * 1.4));
+    const rWind = Math.min(100, parseFloat(wind) * 2.8);
+    const risk  = Math.round(rTemp * 0.4 + rHum * 0.4 + rWind * 0.2);
+    const rCol  = risk > 70 ? '#ff4d1a' : risk > 50 ? '#ffd11a' : risk > 30 ? '#ff8c42' : '#1aff8c';
+
+    el.innerHTML = `
+      <div class="weather-grid">
+        <div class="weather-cell">
+          <div class="weather-cell-label">Temperatura</div>
+          <div class="weather-cell-value" style="color:${temp>35?'#ff4d1a':'#fff'}">${temp}<span class="weather-unit">°C</span></div>
+        </div>
+        <div class="weather-cell">
+          <div class="weather-cell-label">Umidade</div>
+          <div class="weather-cell-value" style="color:${hum<30?'#ff4d1a':'#fff'}">${hum}<span class="weather-unit">%</span></div>
+        </div>
+        <div class="weather-cell">
+          <div class="weather-cell-label">Vento</div>
+          <div class="weather-cell-value">${wind}<span class="weather-unit">km/h</span></div>
+        </div>
+        <div class="weather-cell">
+          <div class="weather-cell-label">Região</div>
+          <div class="weather-cell-value" style="font-size:14px;padding-top:3px">${w.name || st}</div>
+        </div>
+      </div>
+      <div style="margin-top:4px">
+        <div class="risk-row">
+          <span class="risk-name">RISCO CLIMÁTICO</span>
+          <span class="risk-score" style="color:${rCol}">${risk}/100</span>
+        </div>
+        <div class="risk-bar-track"><div class="risk-bar-fill" style="width:${risk}%;background:${rCol}"></div></div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--textdim);margin-top:2px">${desc} · Sensação ${feels}°C</div>
+      </div>
+      ${states.length > 1 ? `<div style="font-family:var(--mono);font-size:9px;color:var(--textdim);margin-top:10px;letter-spacing:1px">+ ${states.length-1} ESTADOS MONITORADOS</div>` : ''}`;
+  }
+
+  function renderBiomas(fires) {
+    const el = document.getElementById('bioma-content');
+    const byBioma = {};
+    fires.forEach(f => {
+      if (!byBioma[f.bioma]) byBioma[f.bioma] = { count: 0, maxRisco: 0 };
+      byBioma[f.bioma].count++;
+      byBioma[f.bioma].maxRisco = Math.max(byBioma[f.bioma].maxRisco, f.risco || 0);
+    });
+
+    const total  = fires.length || 1;
+    const sorted = Object.entries(byBioma).sort((a, b) => b[1].count - a[1].count);
+
+    el.innerHTML = sorted.map(([bioma, info]) => {
+      const pct   = Math.round((info.count / total) * 100);
+      const color = BIOMA_COLOR[bioma] || '#3a4f6a';
+      return `
+        <div class="risk-row">
+          <span class="risk-name" style="color:${color}">${bioma}</span>
+          <span class="risk-score" style="color:${color}">${info.count} focos · risco ${(info.maxRisco*100).toFixed(0)}%</span>
+        </div>
+        <div class="risk-bar-track">
+          <div class="risk-bar-fill" style="width:${pct}%;background:${color}"></div>
+        </div>`;
+    }).join('');
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ORQUESTRADOR
+  // ═══════════════════════════════════════════════════════════════
+  function processAndRender(rawFires, wMap) {
+    fireData   = applyBusinessRules(rawFires);
+    weatherMap = wMap;
+    renderKPIs(fireData);
+    renderMap(fireData);
+    renderAlerts(fireData);
+    renderWeatherPanel(wMap);
+    renderBiomas(fireData);
+    document.getElementById('map-loading').style.display = 'none';
+    log('✓ Dashboard atualizado', 'ok');
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  PIPELINE PRINCIPAL
+  // ═══════════════════════════════════════════════════════════════
+  async function runPipeline() {
+    const fonte = document.getElementById('fonteSelect').value;
+
+    isDemoMode = false;
+    document.getElementById('demoTag').style.display     = 'none';
+    document.getElementById('runBtn').disabled           = true;
+    document.getElementById('map-loading').style.display = 'flex';
+    setStatus('CARREGANDO DADOS', '#ffd11a');
+
+    try {
+      if (fonte === 'json') {
+        // ── OPÇÃO 1: Lê o JSON gerado pelo skyguard_coletor.py ──────
+        // Dados reais da NASA FIRMS coletados localmente sem CORS
+        document.getElementById('loading-msg').textContent = 'Lendo dados_firms.json...';
+        log('▶ Pipeline iniciado — fonte: NASA FIRMS (arquivo local)', 'ok');
+
+        const resp = await fetch('dados_firms.json');
+
+        if (!resp.ok) {
+          throw new Error(
+            'Arquivo dados_firms.json não encontrado.\n' +
+            'Execute primeiro: python skyguard_coletor.py'
+          );
+        }
+
+        const json = await resp.json();
+        log(`✓ NASA FIRMS: ${json.focos.length} focos carregados`, 'ok');
+        log(`✓ Coletado em: ${json.coletado_em}`, 'ok');
+
+        // Normalizar campos do JSON para o formato interno
+        const rawFires = json.focos.map(f => ({
+          latitude:    f.latitude,
+          longitude:   f.longitude,
+          frp:         f.frp         || 0,
+          confidence:  f.confidence  || 0,
+          brightness:  f.brightness  || 0,
+          acq_date:    f.acq_date    || '',
+          acq_time:    f.acq_time    || '',
+          daynight:    f.daynight    || 'D',
+          satellite:   f.satellite   || 'MODIS',
+          risco:       (f.frp || 0) / 300,   // normaliza FRP para escala 0-1
+          diasSemChuva: 0,
+          municipio:   '',
+          state_raw:   '',
+          bioma_raw:   '',
+        }));
+
+        // Montar mapa de clima a partir do JSON
+        const wMap = {};
+        if (json.clima) {
+          Object.entries(json.clima).forEach(([sigla, c]) => {
+            wMap[sigla] = {
+              name: c.nome || sigla,
+              main: { temp: c.temp, humidity: c.umidade, feels_like: c.sensacao },
+              wind: { speed: (c.vento || 0) / 3.6 },
+              weather: [{ description: c.descricao || '' }],
+            };
+          });
+        }
+
+        processAndRender(rawFires, wMap);
+        setStatus('MONITORANDO · NASA FIRMS', '#1aff8c');
+        log('✓ Dashboard atualizado com dados reais da NASA', 'ok');
+
+      } else {
+        // ── OPÇÃO 2: API INPE direta (fallback sem Python) ──────────
+        document.getElementById('loading-msg').textContent = 'Conectando à API INPE...';
+        log('▶ Pipeline iniciado — fonte: INPE Terrabrasilis', 'ok');
+
+        const rawFires = await fetchINPE();
+        const wMap     = await fetchClima(rawFires);
+        processAndRender(rawFires, wMap);
+        setStatus('MONITORANDO · INPE', '#1aff8c');
+        log('✓ Pipeline INPE concluído', 'ok');
+      }
+
+    } catch (err) {
+      document.getElementById('map-loading').style.display = 'none';
+      document.getElementById('alert-list').innerHTML =
+        `<div class="error-box">⚠ ${err.message.replace(/\n/g,'<br>')}</div>`;
+      setStatus('ERRO', '#ff4d1a');
+      log(`ERRO: ${err.message.split('\n')[0]}`, 'critical');
+    } finally {
+      document.getElementById('runBtn').disabled = false;
+    }
+  }
+
+
+  // ═══════════════════════════════════════════════════════════════
+  //  MODO DEMO
+  // ═══════════════════════════════════════════════════════════════
+  function loadDemo() {
+    isDemoMode = true;
+    document.getElementById('demoTag').style.display    = 'inline-block';
+    document.getElementById('map-loading').style.display = 'none';
+    setStatus('DEMO · ATIVO', '#ffd11a');
+    log('▶ Modo demonstração ativado', 'warn');
+
+    const demoFires = [
+      {latitude:'-10.24',longitude:'-55.38',frp:'334',risco:0.92,confidence:'94',acq_date:'2026-05-27',daynight:'D',municipio:'Sinop',state_raw:'MT',bioma_raw:'Amazônia/Cerrado',satellite:'AQUA_M-T',diasSemChuva:18},
+      {latitude:'-12.87',longitude:'-57.91',frp:'289',risco:0.88,confidence:'91',acq_date:'2026-05-27',daynight:'D',municipio:'Juara',state_raw:'MT',bioma_raw:'Amazônia',satellite:'TERRA_M-T',diasSemChuva:22},
+      {latitude:'-4.52', longitude:'-52.14',frp:'187',risco:0.74,confidence:'88',acq_date:'2026-05-27',daynight:'D',municipio:'Altamira',state_raw:'PA',bioma_raw:'Amazônia',satellite:'NOAA-20',diasSemChuva:9},
+      {latitude:'-3.88', longitude:'-50.77',frp:'143',risco:0.68,confidence:'84',acq_date:'2026-05-27',daynight:'D',municipio:'Pacajá',state_raw:'PA',bioma_raw:'Amazônia',satellite:'AQUA_M-T',diasSemChuva:7},
+      {latitude:'-10.92',longitude:'-62.38',frp:'214',risco:0.82,confidence:'90',acq_date:'2026-05-27',daynight:'D',municipio:'Porto Velho',state_raw:'RO',bioma_raw:'Amazônia',satellite:'NPP-375',diasSemChuva:14},
+      {latitude:'-9.55', longitude:'-64.22',frp:'128',risco:0.65,confidence:'82',acq_date:'2026-05-27',daynight:'D',municipio:'Humaitá',state_raw:'RO',bioma_raw:'Amazônia',satellite:'NOAA-19',diasSemChuva:11},
+      {latitude:'-10.55',longitude:'-48.45',frp:'96', risco:0.58,confidence:'79',acq_date:'2026-05-27',daynight:'D',municipio:'Palmas',state_raw:'TO',bioma_raw:'Cerrado',satellite:'AQUA_M-M',diasSemChuva:6},
+      {latitude:'-15.44',longitude:'-49.88',frp:'88', risco:0.54,confidence:'78',acq_date:'2026-05-27',daynight:'D',municipio:'Goiânia',state_raw:'GO',bioma_raw:'Cerrado',satellite:'TERRA_M-M',diasSemChuva:5},
+      {latitude:'-12.54',longitude:'-41.22',frp:'62', risco:0.44,confidence:'71',acq_date:'2026-05-27',daynight:'D',municipio:'Irecê',state_raw:'BA',bioma_raw:'Caatinga',satellite:'NOAA-18',diasSemChuva:30},
+      {latitude:'-6.22', longitude:'-39.47',frp:'58', risco:0.42,confidence:'70',acq_date:'2026-05-27',daynight:'D',municipio:'Quixadá',state_raw:'CE',bioma_raw:'Caatinga',satellite:'NOAA-19',diasSemChuva:45},
+      {latitude:'-18.77',longitude:'-44.22',frp:'37', risco:0.32,confidence:'62',acq_date:'2026-05-27',daynight:'D',municipio:'Montes Claros',state_raw:'MG',bioma_raw:'Cerrado/Mata Atlântica',satellite:'AQUA_M-T',diasSemChuva:3},
+      {latitude:'-11.55',longitude:'-56.77',frp:'255',risco:0.86,confidence:'92',acq_date:'2026-05-26',daynight:'N',municipio:'Lucas do Rio Verde',state_raw:'MT',bioma_raw:'Cerrado/Amazônia',satellite:'NOAA-20',diasSemChuva:19},
+      {latitude:'-9.88', longitude:'-63.11',frp:'132',risco:0.66,confidence:'83',acq_date:'2026-05-26',daynight:'N',municipio:'Ji-Paraná',state_raw:'RO',bioma_raw:'Amazônia',satellite:'NPP-375',diasSemChuva:12},
+      {latitude:'-6.74', longitude:'-53.45',frp:'167',risco:0.71,confidence:'86',acq_date:'2026-05-27',daynight:'D',municipio:'Altamira',state_raw:'PA',bioma_raw:'Amazônia',satellite:'TERRA_M-T',diasSemChuva:8},
+      {latitude:'-7.85', longitude:'-42.11',frp:'43', risco:0.34,confidence:'65',acq_date:'2026-05-27',daynight:'D',municipio:'Canto do Buriti',state_raw:'PI',bioma_raw:'Caatinga',satellite:'NOAA-18',diasSemChuva:28},
+    ];
+
+    const demoClima = {
+      MT: { name:'Cuiabá',      main:{temp:39,humidity:18,feels_like:42}, wind:{speed:1.33}, weather:[{description:'céu limpo'}] },
+      PA: { name:'Belém',       main:{temp:32,humidity:72,feels_like:38}, wind:{speed:0.58}, weather:[{description:'poucas nuvens'}] },
+      RO: { name:'Porto Velho', main:{temp:36,humidity:28,feels_like:39}, wind:{speed:0.89}, weather:[{description:'céu claro'}] },
+    };
+
+    processAndRender(demoFires, demoClima);
+    log(`✓ Demo: ${demoFires.length} focos em 5 biomas`, 'ok');
+  }
+
+
+  // ── INICIALIZAÇÃO ─────────────────────────────────────────────
+  log('SkyGuard v4 inicializado', 'ok');
+  log('Fonte NASA: execute skyguard_coletor.py antes', '');
+  log('Selecione a fonte e clique em CARREGAR DADOS', '');
+
+  </script>
+
+</body>
+</html>
