@@ -61,7 +61,7 @@ Projeto desenvolvido para a **Global Solution da FIAP**, com foco em automação
 ## 👤 Autor
 
 **Vinicius** — Estudante de Engenharia de Software (FIAP)
-[LinkedIn](#) · [GitHub](#)
+[LinkedIn](www.linkedin.com/in/vinicius-yamashita) · [GitHub](https://github.com/Viniyama23)
 
 ## 📄 Licença
 
